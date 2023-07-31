@@ -1,0 +1,12 @@
+#ifndef HTTPSERVER_BASE_ERRORHANDLER_H
+#define HTTPSERVER_BASE_ERRORHANDLER_H
+
+
+void errSys(const char* x);
+
+
+
+
+
+
+#endif // HTTPSERVER_BASE_ERRORHANDLER_H
