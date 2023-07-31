@@ -1,3 +1,0 @@
-/home/deploy/projects/HttpServer/build/CMakeFiles/rebuild_cache.dir
-/home/deploy/projects/HttpServer/build/CMakeFiles/HttpServer.dir
-/home/deploy/projects/HttpServer/build/CMakeFiles/edit_cache.dir
