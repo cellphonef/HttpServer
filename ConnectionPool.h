@@ -4,7 +4,7 @@
 
 #include "Mutex.h"
 #include "ConditionVar.h"
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 
 #include <string>
