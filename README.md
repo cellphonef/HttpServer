@@ -7,10 +7,10 @@
 
 ``` bash
 # 创建yourdb数据库并使用（数据库名可以自行确定）
-create database yourdb;
-use yourdb;
+create database yourDb;
+use yourDb;
 
-# 创建user表
+# 创建user表（保存用户注册信息）
 create table user(
     username char(50) NULL,
     passwd char(50) NULL
@@ -29,6 +29,8 @@ HttpServer server(yourPort, threadNum, yourDbUserName, yourDbPasswd, yourDbName,
 
 
 
-
 ## 压力测试
+
+压力测试采用wenbench完成。
+
 
