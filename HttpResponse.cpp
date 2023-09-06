@@ -9,7 +9,7 @@
 #include <string.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 
 using namespace std;

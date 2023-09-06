@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <sys/uio.h>
 #include <string.h>
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 using namespace std;
 

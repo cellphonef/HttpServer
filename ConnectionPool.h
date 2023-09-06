@@ -6,6 +6,7 @@
 #include "ConditionVar.h"
 #include <mysql.h>
 
+#include <mysql.h>
 
 #include <string>
 #include <vector>

@@ -6,7 +6,7 @@
 #include <map>
 
 #include <sys/stat.h>
-#include <mysql/mysql.h>
+#include <mysql.h>
 
 
 class HttpResponse {
