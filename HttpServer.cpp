@@ -28,7 +28,7 @@ HttpServer::HttpServer(int port,
     activeFds_ = new epoll_event[kMaxEventNum];
 
     char server_path[200];
-    getcwd(server_path, 200);
+    char* ret = getcwd(server_path, 200); (void)ret;
     char root[6] = "/root";
     docRoot_ = (char *)malloc(strlen(server_path) + strlen(root) + 1);
     strcpy(docRoot_, server_path);

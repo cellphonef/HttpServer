@@ -28,6 +28,5 @@ target_include_directories(HttpServer PUBLIC . /usr/local/mysql/include)  # 添�
 target_link_libraries(HttpServer mysqlclient)  # 链接mysql链接库
 
 
-
 MESSAGE(STATUS "project_directory_is:" ${CMAKE_SOURCE_DIR})
 MESSAGE(STATUS "binary_directory_is:" ${CMAKE_BINARY_DIR})
