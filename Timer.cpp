@@ -24,7 +24,6 @@ void TimerHeap::addTimer(int connFd, int64_t expired, TimerCallback callback) {
     int len = timers_.size();
     int index = siftUp_(len-1);
     fd2Idx_[connFd] = index;
-    cout << "fd=" << connFd << " addTimer done" << endl;
 }
 
 void TimerHeap::adjustTimer(int fd) {
@@ -39,14 +38,10 @@ void TimerHeap::adjustTimer(int fd) {
 
 
 void TimerHeap::delTimer(int fd) {
-    cout << "fd=" << fd << " delTimer" << endl;
     int index = fd2Idx_[fd];
-    cout << "fd=" << fd << " index = " << index << endl;
-    cout << "fd=" << fd << " do timer callback" << endl;
     timers_[index]->callback();
     del_(index);
     fd2Idx_.erase(fd);
-    cout << "delete fd=" << fd << " timer done!" << endl;
 }
 
 void TimerHeap::del_(int index) {
@@ -81,7 +76,6 @@ void TimerHeap::tick() {
             break;
         }
         timer->callback();
-        cout << "do timer callback done!" <<endl;
         del_(0);
 
     }

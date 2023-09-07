@@ -69,7 +69,7 @@ void Buffer::ensureWritableBytes(size_t len) {
 
 
     
-int Buffer::readFd(int fd) {
+ssize_t Buffer::readFd(int fd) {
     // saved an ioctl()/FIONREAD call to tell how much to read
     char extrabuf[65536];
     struct iovec vec[2];
@@ -82,15 +82,12 @@ int Buffer::readFd(int fd) {
     // when extrabuf is used, we read 128k-1 bytes at most.
     const int iovcnt = (writable < sizeof extrabuf) ? 2 : 1;
     const ssize_t n = readv(fd, vec, iovcnt);
-    cout << "fd=" << fd <<" writable=" << writable << endl;
-    cout << "fd=" << fd << " n=" << n << endl;
     if (n < 0) {
         // FIXME: 停止程序
         exit(1);
     }
-    else if (static_cast<size_t>(n) <= writable)
+    else if (static_cast<size_t>(n) <= writable)  
     {   
-        cout << "fd=" << fd << " writeIndex += n" << endl;
         writeIndex_ += n;
     }
     else

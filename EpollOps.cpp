@@ -1,5 +1,6 @@
 #include "EpollOps.h"
 #include "ErrorHandler.h"
+#include "Logger.h"
 
 #include <iostream>
 
@@ -29,39 +30,42 @@ int createEpollOrDie() {
 *
 */
 
-void addFd(int epollfd, int sockFd, bool enableET) {
+void addFd(int epollfd, int sockFd, bool oneShot, bool enableET) {
     struct epoll_event event;
     event.data.fd = sockFd;
-    event.events = EPOLLIN;
+    event.events = EPOLLIN | EPOLLRDHUP;
     if (enableET) {
         event.events |= EPOLLET;
+    }
+    if (oneShot) {
+        event.events |= EPOLLONESHOT;
     }
 
     int ret = epoll_ctl(epollfd, EPOLL_CTL_ADD, sockFd, &event);
     if (ret < 0) {
         errSys("epoll_ctl EPOLL_CTL_ADD error");
     }
-    cout << "fd=" << sockFd << " addFd done!" << endl;
 }
 
 void delFd(int epollFd, int sockFd) {
     int ret = epoll_ctl(epollFd, EPOLL_CTL_DEL, sockFd, NULL);
+
+    LOG_INFO("fd = %d delFd done!", sockFd);
     if (ret < 0) {
-        cout << "del fd error! fd=" << sockFd << endl;
-        errSys("epoll_ctl EPOLL_CTL_DEL error");
+        LOG_ERROR("fd = %d EPOLL_CTL_DEL ERROR!", sockFd);
     }
-    cout << "fd=" << sockFd <<" delFd done!" << endl;
 }
 
 void modFd(int epollFd, int sockFd, uint32_t events) {
     struct epoll_event event;
     event.data.fd = sockFd;
+   
     event.events = events | EPOLLRDHUP | EPOLLONESHOT;
+   
+    
 
     int ret = epoll_ctl(epollFd, EPOLL_CTL_MOD, sockFd, &event);
     if (ret < 0) {
-        cout << "mod fd error! fd=" << sockFd << endl;
-        errSys("epoll_ctl EPOLL_CTL_MOD error");
+        LOG_ERROR("fd = %d EPOLL_CTL_MOD ERROR!", sockFd);
     } 
-    cout << "fd=" << sockFd << " modFd done!" << endl;
 }

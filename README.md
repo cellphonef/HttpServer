@@ -3,7 +3,7 @@
 
 ## 快速开始
 
-1. 确保安装好MySQL，并在MySQL中执行以下操作：
+1. 确保安装好MySQL并启动MySQL服务，并在MySQL中执行以下操作：
 
 ``` bash
 # 创建yourdb数据库并使用（数据库名可以自行确定）
@@ -12,8 +12,8 @@ use yourDb;
 
 # 创建user表（保存用户注册信息）
 create table user(
-    username char(50) NULL,
-    passwd char(50) NULL
+    username char(50) NULL,  # 用户名
+    passwd char(50) NULL     # 密码
 )engine=InnoDB;
 ```
 
@@ -29,10 +29,7 @@ HttpServer server(yourPort, threadNum, yourDbUserName, yourDbPasswd, yourDbName,
 
 3. 编译构建并运行
 ```bash
-# 完成以下命令后，会在项目同一级目录生成一个build文件夹
-# build文件夹下存放着最终生成的可执行文件
 ./build.sh
-cd ../build/release
 ./HttpServer
 ```
 
@@ -45,6 +42,9 @@ cd ../build/release
 压力测试采用wenbench完成。
 
 ### 测试环境
+
+- ubuntu
+- 8核，8G内存
 
 
 ### 测试结果

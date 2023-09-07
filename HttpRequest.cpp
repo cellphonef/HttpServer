@@ -60,8 +60,6 @@ bool HttpRequest::parse(Buffer& buf) {
         }
         else if (checkState_ == CheckState::kCheckRequestBody) {
             int len = stoi(headers_["Content-Length"]);
-            cout << "Content-Length=" << len << endl;
-            cout << "buf readable=" << buf.readableBytes() << endl;
 
             if (len > buf.readableBytes()) {
                 hasMore = false;
@@ -71,7 +69,6 @@ bool HttpRequest::parse(Buffer& buf) {
             }
         }
     }
-    cout << "checkState=" << (int)checkState_ << endl;
     return ok;
     
 }

@@ -1,11 +1,12 @@
 
 #include <iostream>
+#include <time.h>
+#include "Logger.h"
+
 
 using namespace std;
 
 int main() {
-    char realFile[200];
-    char url_[100];
-    
-
+    LOG_INFO("TEST LOGGER!!!");
+    return 0;
 }

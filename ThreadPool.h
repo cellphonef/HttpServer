@@ -72,18 +72,15 @@ void ThreadPool<T>::start() {
 template <class T> 
 void ThreadPool<T>::run() {
     while (!stop_) {
-        cout << "thread signal" << endl;
         T* item;
         {
             MutexLockGuard guard(mtx_);
             while (taskQueue_.empty()) {
-                cout << "thread wait" << endl;
                 cond_.wait(mtx_);
             }
             item = taskQueue_.front();
             taskQueue_.pop();
         }
-        cout << "fd=" << item->getFd() << " item->process" << endl;
         item->process();
     }  
 }
@@ -92,7 +89,6 @@ void ThreadPool<T>::run() {
 
 template <class T>
 void ThreadPool<T>::submit(T* item) {
-    cout << "fd=" << item->getFd() << " submit" << endl;
     MutexLockGuard guard(mtx_);
     taskQueue_.push(item);
     cond_.signal();

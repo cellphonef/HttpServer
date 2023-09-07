@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.20)
 
 project(WebServer)
 
@@ -20,6 +20,7 @@ set(SRCS
   ConditionVar.cpp
   ErrorHandler.cpp
   Thread.cpp
+  Logger.cpp
 )
 
 link_directories(/usr/local/mysql/lib)  # 添加链接器查找路径，以便能找到mysql链接库

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <stddef.h>
+#include <sys/types.h>
 
 
 class Buffer {
@@ -35,7 +36,7 @@ public:
     char* beginRead();
     const char* beginRead() const;
     
-    int readFd(int fd);  
+    ssize_t readFd(int fd);  
     int writeFd(int fd);
 
 

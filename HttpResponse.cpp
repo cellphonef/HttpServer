@@ -54,7 +54,6 @@ void HttpResponse::doResponse(HttpRequest &req, Buffer& inBuf, Buffer& outBuf) {
     version_ = req.getVersionString();
     string keep = req.getHeader("Connection");
     if (keep == "keep-alive" || keep == "Keep-Alive") {
-        cout << "setIsCloseConn false" << endl;
         setIsCloseConn(false);
     } else {
         setIsCloseConn(true);
@@ -62,7 +61,6 @@ void HttpResponse::doResponse(HttpRequest &req, Buffer& inBuf, Buffer& outBuf) {
     strcpy(realFile_, docRoot_);
     int len = strlen(docRoot_);
     string u = req.getUrl();
-    cout << "url=" << u << endl;
     size_t found = u.rfind("/");
     string fileName = u.substr(found);
 
@@ -137,7 +135,6 @@ void HttpResponse::doResponse(HttpRequest &req, Buffer& inBuf, Buffer& outBuf) {
         strncpy(realFile_ + len, url_, strlen(url_));
     }
     
-    cout << "realFile=" << realFile_ << endl;
 
     if (stat(realFile_, &fileStat_) < 0) {  // 没有该文件
         setHttpCode(HttpCode::k404NotFound);
@@ -172,7 +169,6 @@ void HttpResponse::addResponseHeader_(Buffer& buf) {
     if (isCloseConn_) {
         buf.append("Connection: close\r\n", 19);
     } else {
-        cout << "buf.append keep-alive" << endl;
         buf.append("Connection: keep-alive\r\n", 24);
     }
 

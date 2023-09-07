@@ -1,5 +1,6 @@
 #include "HttpConn.h"
 #include "EpollOps.h"
+#include "Logger.h"
 #include <iostream>
 #include <algorithm>
 #include <map>
@@ -22,14 +23,12 @@ void HttpConn::initResponse(ConnectionPool* connPool, char* docRoot) {
 }
 
 void HttpConn::init(int fd, struct sockaddr_in addr) {
-    cout << "fd=" << fd_ << " HttpConn do init" << endl;
     fd_ = fd;
     addr_ = addr;
     reset();
 }
 
 void HttpConn::reset() {
-    cout << "fd=" << fd_ << " reset" << endl;
     bytesToSend_ = 0;
     bytesHaveSend_ = 0;
     inputBuf_.retrieveAll();  // buffer是否应该shrink
@@ -45,9 +44,8 @@ void HttpConn::reset() {
 
 void HttpConn::process() {
     // 业务线程执行
-    cout << "fd=" << fd_ << " start to parse" << endl;
     if (!httpRequest_.parse(inputBuf_)) {  // 解析失败
-        cout << "parse failed!" << endl;
+        LOG_INFO("parse failed!");
         outputBuf_.append("HTTP/1.1 400 Bad Request\r\n", 26);
         outputBuf_.append("\r\n", 2);
         outputBuf_.append("Your request has bad syntax or is inherently impossible to staisfy.\n", 68);
@@ -57,19 +55,19 @@ void HttpConn::process() {
         bytesToSend_ = iv_[0].iov_len;
     }
 
-
     if (httpRequest_.gotAll()) {  // 解析完成
         doRequest();
-    } 
+        modFd(epollFd, fd_, EPOLLOUT);
+    }
 
-    modFd(epollFd, fd_, EPOLLOUT);  // 注册该fd的写事件
+    LOG_INFO("fd = %d  process done!", fd_);
+    
+    
 }
 
 void HttpConn::doRequest() {
-    cout << "fd=" << fd_ << " start to doRequest" << endl;
     httpResponse_.doResponse(httpRequest_, inputBuf_, outputBuf_);  // 根据request做出响应，响应状态反映了响应情况
     if(httpResponse_.getHttpCode() == HttpResponse::HttpCode::k200Ok) {
-        cout << "fd=" << fd_ << " response ok" << endl;
         int fd = open(httpResponse_.getRealFile(), O_RDONLY);
         fileAddress_ = static_cast<char*>(mmap(0, httpResponse_.getFileStat().st_size, PROT_READ, MAP_PRIVATE, fd, 0));
         close(fd);
@@ -85,32 +83,29 @@ void HttpConn::doRequest() {
         ivCount_ = 1;
         bytesToSend_ = iv_[0].iov_len;
     }
-    cout << "fd=" << fd_ << " bytesToSend=" << bytesToSend_ << endl;
 }
 
 void HttpConn::closeConn() {
-    cout << "fd=" << fd_ << " HttpConn::closeConn()" << endl;
     delFd(epollFd, fd_);
     close(fd_);
-    cout << "fd=" << fd_ << " HttpConn::closeConn() done!" << endl;
 }
 
 
-void HttpConn::recvMsg() { 
-    inputBuf_.readFd(fd_);    
+ssize_t HttpConn::recvMsg() { 
+    ssize_t n = inputBuf_.readFd(fd_);   
+    return n; 
 }   
 
 bool HttpConn::sendMsg() {
-    cout << "fd=" << fd_ << " sendMsg" << endl;
     // 主线程执行
 
     while (1) {  // 未发送完，考虑大文件
         int temp = writev(fd_, iv_, ivCount_);
-        cout << "fd=" << fd_ << " temp=" << temp << endl;
 
         if (temp < 0) {  
-            if (errno == EAGAIN) {  // 发送缓冲区满了，监听可写
-                cout << "sendMsg error EAGAIN" << endl;
+            if (errno == EAGAIN) {  // 发送缓冲区满了，继续监听可写
+                LOG_INFO("fd = %d write EAGAIN", fd_);
+                LOG_INFO("fd = %d remaining %d bytes to send (%d already success)", fd_, (int)bytesToSend_, (int)bytesHaveSend_);
                 modFd(epollFd, fd_, EPOLLOUT);
                 return false;
             }
@@ -119,14 +114,12 @@ bool HttpConn::sendMsg() {
                 munmap(fileAddress_, httpResponse_.getFileStat().st_size);
                 fileAddress_ = NULL;
             }
-            cout << "sendMsg error other error!" << endl;
+            // cout << "sendMsg error other error!" << endl;
             return true;
         }
 
         bytesToSend_ -= temp;
         bytesHaveSend_ += temp;
-        cout << "fd=" << fd_ << " bytesToSend=" << bytesToSend_ << endl;
-        cout << "fd=" << fd_ << " byteHaveSend=" << bytesHaveSend_ << endl; 
         
         if (bytesHaveSend_ > iv_[0].iov_len) {
             iv_[1].iov_base = fileAddress_ + (bytesHaveSend_ - iv_[0].iov_len);
@@ -137,7 +130,8 @@ bool HttpConn::sendMsg() {
             iv_[0].iov_len = bytesToSend_ - bytesHaveSend_;
         }   
 
-        if (bytesToSend_ <= 0) {
+        if (bytesToSend_ <= 0) {  // 发送完毕
+            LOG_INFO("fd = %d remaining %d bytes to send (%d already success)", fd_, (int)bytesToSend_, (int)bytesHaveSend_);
             if (httpResponse_.getIsCloseConn()) {  // 短连接
                 return true;
             } else {  // 长连接
@@ -147,6 +141,7 @@ bool HttpConn::sendMsg() {
             }
         }
     }
+    
 }
 
 int HttpConn::getFd() {
@@ -159,4 +154,9 @@ void HttpConn::setFd(int fd) {
 
 int HttpConn::getBytesToSend() const {
     return bytesToSend_;
+}
+
+
+bool HttpConn::isWriting() const {
+    return bytesToSend_ == 0;
 }

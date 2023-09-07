@@ -14,7 +14,7 @@ public:
     void reset();
 
     bool sendMsg();
-    void recvMsg();
+    ssize_t recvMsg();
 
     void process();
     void doRequest();
@@ -23,6 +23,8 @@ public:
     int getFd();
     void setFd(int fd);
     int getBytesToSend() const;
+
+    bool isWriting() const;
 
     void initResponse(ConnectionPool* connPool, char* docRoot);
     static int epollFd;
@@ -43,6 +45,7 @@ private:
     int ivCount_;
     size_t bytesToSend_;
     size_t bytesHaveSend_;
+
 };
 
 
