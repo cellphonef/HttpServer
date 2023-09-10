@@ -40,7 +40,7 @@ void addFd(int epollfd, int sockFd, bool oneShot, bool enableET) {
 
     int ret = epoll_ctl(epollfd, EPOLL_CTL_ADD, sockFd, &event);
     if (ret < 0) 
-        LOG_ERROR("%s : % s", "epoll_ctl EPOLL_CTL_ADD error", strerror(errno));
+        LOG_ERROR("%s : %s", "epoll_ctl EPOLL_CTL_ADD error", strerror(errno));
     
 }
 

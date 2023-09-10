@@ -18,7 +18,6 @@ set(SRCS
   ConnectionPool.cpp
   Mutex.cpp
   ConditionVar.cpp
-  ErrorHandler.cpp
   Thread.cpp
   Logger.cpp
 )

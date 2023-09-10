@@ -1,20 +1,55 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Sign up</title>
-    </head>
-    <body>
-<br/>
-<br/>
-    <div align="center"><font size="5"> <strong>注册</strong></font></div>
-    <br/>
-        <div class="login">
-                <form action="3CGISQL.cgi" method="post">
-                        <div align="center"><input type="text" name="user" placeholder="用户名" required="required"></div><br/>
-                        <div align="center"><input type="password" name="password" placeholder="用户密码" required="required"></div><br/>
-                        <div align="center"><button type="submit">注册</button></div>
-                </form>
-        </div>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        .login {
+            margin-top: 30px;
+        }
+        .login input[type="text"],
+        .login input[type="password"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 250px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .login button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .login button:hover {
+            background-color: #45a049;
+        }
+        .login button:active {
+            background-color: #3e8942;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sign up</h1>
+    <div class="login">
+        <form action="3CGISQL.cgi" method="post">
+            <input type="text" name="user" placeholder="用户名" required="required"><br>
+            <input type="password" name="password" placeholder="用户密码" required="required"><br>
+            <button type="submit">注册</button>
+        </form>
+    </div>
+</body>
 </html>

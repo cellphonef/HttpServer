@@ -1,7 +1,6 @@
 #include "HttpServer.h"
 #include "SocketOps.h"
 #include "EpollOps.h"
-#include "ErrorHandler.h"
 #include "Timer.h"
 #include "Logger.h"
 

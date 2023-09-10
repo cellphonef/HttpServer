@@ -1,27 +1,51 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>WebServer</title>
-    </head>
-    <body>
-    <br/>
-    <br/>
-    <div align="center"><font size="5"> <strong>是时候做出选择了</strong></font></div>
-	<br/>
-		<br/>
-		<form action="5" method="post">
- 			<div align="center"><button type="submit">xxx.jpg</button></div>
-                </form>
-		<br/>
-                <form action="6" method="post">
-                        <div align="center"><button type="submit" >xxx.avi</button></div>
-                </form>
-		<br/>
-		<form action="7" method="post">
- 			<div align="center"><button type="submit">关注我</button></div>
-                </form>
-		
-        </div>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <title>HttpServer</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-top: 50px;
+        }
+        .button-container {
+            margin-top: 30px;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        .button-container button:hover {
+            background-color: #45a049;
+        }
+        .button-container button:active {
+            background-color: #3e8942;
+        }
+    </style>
+</head>
+<body>
+    <h1>HttpServer</h1>
+    <div class="button-container">
+        <form action="5" method="post">
+            <button type="submit">看图片</button>
+        </form>
+        <br>
+        <form action="6" method="post">
+            <button type="submit">看视频</button>
+        </form>
+        <br>
+        <form action="7" method="post">
+            <button type="submit">看我</button>
+        </form>
+    </div>
+</body>
 </html>
