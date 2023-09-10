@@ -1,4 +1,5 @@
 #include "Logger.h"
+#include "Thread.h"
 
 #include <iostream>
 
@@ -16,16 +17,16 @@ void Logger::log(const std::string& msg) {
     std::string pre = "";
     switch(level_) {
         case Level::INFO:
-            pre = "[INFO]";
+            pre = "[INFO] ";
             break;
         case Level::DEBUG:
-            pre = "[DEBUG]";
+            pre = "[DEBUG] ";
             break;
         case Level::ERROR:
-            pre = "[ERROR]";
+            pre = "[ERROR] ";
             break;
         case Level::FATAL:
-            pre = "[FATAL]";
+            pre = "[FATAL] ";
             break;
         default:
             break;
@@ -35,5 +36,7 @@ void Logger::log(const std::string& msg) {
     std::string timeString(ctime(&now));
     timeString = timeString.substr(0, timeString.size() - 1);
 
-    std::cout << pre + timeString << " : " << msg << std::endl;
+
+    std::cout << pre + timeString << " " << gettid() << " : " << msg << std::endl;
+    
 }

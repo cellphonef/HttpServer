@@ -18,8 +18,8 @@ void TimerHeap::addTimer(int connFd, int64_t expired, TimerCallback callback) {
     timer->callback = callback;
     struct timeval tv;
     gettimeofday(&tv, 0);
-    int64_t now = tv.tv_sec * 1000 + tv.tv_usec / 1000;
-    timer->expired = now + expired;
+    int64_t now = tv.tv_sec * 1000 + tv.tv_usec / 1000;  // 当前毫秒数
+    timer->expired = now + expired;  // 过期时间，绝对时间
     timers_.push_back(timer);
     int len = timers_.size();
     int index = siftUp_(len-1);

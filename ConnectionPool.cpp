@@ -1,5 +1,6 @@
 #include "ConnectionPool.h"
 #include "MutexLockGuard.h"
+#include "Logger.h"
 
 #include <iostream>
 using namespace std;
@@ -22,14 +23,12 @@ void ConnectionPool::init(string url, string userName, string passWd,
         MYSQL* con = NULL;
         con = mysql_init(con);
         if (con == NULL) {
-            // FIXME: LOG
-            exit(1);
+            LOG_ERROR("mysql_init error!");
         }
         con = mysql_real_connect(con, url_.c_str(), userName_.c_str(), passWd_.c_str(), 
                                  databaseName_.c_str(), port_, NULL, 0);
         if (con == NULL) {
-            // FIXME: LOG
-            exit(1);
+            LOG_ERROR("mysql_real_connect error!");
         }
         conns_.push_back(con);   
     }

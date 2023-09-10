@@ -2,6 +2,12 @@
 #define HTTPSERVER_THREAD_H
 
 #include <pthread.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+
+pid_t gettid();
+
 
 class Thread {  //FIXME: C++11
 public:

@@ -6,6 +6,7 @@
 #include "MutexLockGuard.h"
 #include "ConditionVar.h"
 #include "Thread.h"
+#include "Logger.h"
 #include <queue>
 
 #include <iostream>
@@ -66,11 +67,13 @@ void ThreadPool<T>::start() {
     for (int i = 0; i < threadNum_; i++) {
         workers_[i].setFunc(threadFunc, this);
         workers_[i].start();
+        LOG_INFO("The %d thread start!", i);
     }
 }
 
 template <class T> 
 void ThreadPool<T>::run() {
+    LOG_INFO("thread start running!");
     while (!stop_) {
         T* item;
         {

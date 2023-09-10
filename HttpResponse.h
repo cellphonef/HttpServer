@@ -3,6 +3,7 @@
 
 #include "HttpRequest.h"
 #include "ConnectionPool.h"
+
 #include <map>
 
 #include <sys/stat.h>
@@ -43,32 +44,31 @@ private:
     void addBlankLine_(Buffer& buf);
     void addContent_(Buffer& buf);
 
-    
-
     // 用于设置响应行
     std::string version_;
     HttpCode httpCode_;
 
     // 用于设置响应头
     std::map<std::string, std::string> headers_;
-    bool isCloseConn_;  // 是否保持连接
+    bool isCloseConn_;  // keep-alive ?
 
     // 用于设置响应体
+    // 1. 设置出错情况
     static const char kError400[];
     static const char kError403[];
     static const char kError404[];
     static const char kError500[];
-
-
+    // 2. 静态资源访问
     static const int kFilePathMaxLen = 200;
     static const int kFileNameMaxLen = 100;
     static char* docRoot_;
     struct stat fileStat_;
     char realFile_[kFilePathMaxLen];
     char url_[kFileNameMaxLen];
-
+    // 3. 登录注册
     MYSQL* mysql_;
     static ConnectionPool* connPool_;
+
 
 };
 

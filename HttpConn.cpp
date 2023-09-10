@@ -1,6 +1,7 @@
 #include "HttpConn.h"
 #include "EpollOps.h"
 #include "Logger.h"
+
 #include <iostream>
 #include <algorithm>
 #include <map>
@@ -60,9 +61,7 @@ void HttpConn::process() {
         modFd(epollFd, fd_, EPOLLOUT);
     }
 
-    LOG_INFO("fd = %d  process done!", fd_);
-    
-    
+    LOG_INFO("fd = %d process done!", fd_);
 }
 
 void HttpConn::doRequest() {
@@ -100,7 +99,7 @@ bool HttpConn::sendMsg() {
     // 主线程执行
 
     while (1) {  // 未发送完，考虑大文件
-        int temp = writev(fd_, iv_, ivCount_);
+        ssize_t temp = writev(fd_, iv_, ivCount_);
 
         if (temp < 0) {  
             if (errno == EAGAIN) {  // 发送缓冲区满了，继续监听可写
@@ -114,25 +113,29 @@ bool HttpConn::sendMsg() {
                 munmap(fileAddress_, httpResponse_.getFileStat().st_size);
                 fileAddress_ = NULL;
             }
-            // cout << "sendMsg error other error!" << endl;
             return true;
         }
 
         bytesToSend_ -= temp;
         bytesHaveSend_ += temp;
         
-        if (bytesHaveSend_ > iv_[0].iov_len) {
-            iv_[1].iov_base = fileAddress_ + (bytesHaveSend_ - iv_[0].iov_len);
+        if (bytesHaveSend_ > iv_[0].iov_len) {  // 第一部分已发完，手动调整
             iv_[0].iov_len = 0;
+            iv_[1].iov_base = fileAddress_ + (bytesHaveSend_ - outputBuf_.readableBytes());
             iv_[1].iov_len = bytesToSend_;
         } else {
             iv_[0].iov_base = outputBuf_.beginRead() + bytesHaveSend_;
-            iv_[0].iov_len = bytesToSend_ - bytesHaveSend_;
+            iv_[0].iov_len = iv_[0].iov_len - bytesHaveSend_;
         }   
 
         if (bytesToSend_ <= 0) {  // 发送完毕
             LOG_INFO("fd = %d remaining %d bytes to send (%d already success)", fd_, (int)bytesToSend_, (int)bytesHaveSend_);
+            
             if (httpResponse_.getIsCloseConn()) {  // 短连接
+                if (fileAddress_) {
+                    munmap(fileAddress_, httpResponse_.getFileStat().st_size);
+                    fileAddress_ = NULL;
+                }
                 return true;
             } else {  // 长连接
                 reset();

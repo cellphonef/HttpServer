@@ -14,7 +14,6 @@ void HttpRequest::reset(HttpRequest& other) {
     headers_.swap(other.headers_);
 }
 
-
 bool HttpRequest::parse(Buffer& buf) {
     bool ok = true;
     bool hasMore = true;
@@ -142,7 +141,7 @@ void HttpRequest::setMethod(const char* begin, const char* end) {
         method_ = Method::kGet;
     } else if (m == "POST") {
         method_ = Method::kPost;
-    } else {
+    } else {  // 其他方法未实现
 
     }
 
@@ -171,7 +170,6 @@ void HttpRequest::setUrl(const char* begin, const char* end) {
 string HttpRequest::getUrl() const {
     return url_;
 }
-
 
 void HttpRequest::printHeaders() const {
     for (const auto& header : headers_) {

@@ -192,11 +192,10 @@ void HttpResponse::addResponseHeader_(Buffer& buf) {
     }
     
     // 3. content-type
-    string ct = ("Content-Type: " + string("text/html") + "\r\n");
-    buf.append(ct.c_str(), ct.length()); 
+    // string ct = ("Content-Type: " + string("text/html") + "\r\n");
+    // buf.append(ct.c_str(), ct.length()); 
 
 }
-
 
 void HttpResponse::addContent_(Buffer& buf) {
     if (httpCode_ == HttpCode::k400BadRequest) {
